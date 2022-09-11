@@ -110,8 +110,9 @@ As Dialog:
 ```dart
 final val = openDialog(context);
 Future<HijriDate?> openDialog(BuildContext context)async{
- return await showJDateTimePicker(
+ return await showJHijriPicker(
    context: context,
+   pickerType: PickerType.JWestern,
    startDate: JDateModel(
        jhijri: JHijri(
          fYear: 1442,
@@ -160,7 +161,7 @@ As Widget:
 
   @override
   Widget build(BuildContext context) {
-    return JDateTimePicker(
+    return JWesternDatePicker(
       widgetType: WidgetType.JContainer,
       buttons: const SizedBox(),
       primaryColor: Colors.blue,

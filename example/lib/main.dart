@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const Divider(
                 color: Colors.blue,
               ),
-              JDateTimePicker(
+              JWesternDatePicker(
                 widgetType: WidgetType.JContainer,
                 buttons: const SizedBox(),
                 primaryColor: Colors.blue,
@@ -122,6 +122,17 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           FloatingActionButton(
             heroTag: "4",
+            onPressed: () async {
+              final dateTime = await showJHijriPicker(context: context);
+              if (dateTime != null) {
+                debugPrint(dateTime.toMap().toString());
+              }
+            },
+            tooltip: 'CC',
+            child: const Icon(Icons.cabin),
+          ),
+          FloatingActionButton(
+            heroTag: "3",
             onPressed: () async {
               final dateTime = await showJHijriPicker(
                 context: context,
@@ -173,8 +184,21 @@ class _MyHomePageState extends State<MyHomePage> {
           FloatingActionButton(
             heroTag: "2",
             onPressed: () async {
-              final dateTime = await showJDateTimePicker(
+              final dateTime = await showJHijriPicker(
+                  pickerType: PickerType.JWestern, context: context);
+              if (dateTime != null) {
+                debugPrint(dateTime.toString());
+              }
+            },
+            tooltip: 'CC',
+            child: const Icon(Icons.cabin_outlined),
+          ),
+          FloatingActionButton(
+            heroTag: "1",
+            onPressed: () async {
+              final dateTime = await showJHijriPicker(
                 context: context,
+                pickerType: PickerType.JWestern,
                 startDate: JDateModel(
                     jhijri: JHijri(
                   fYear: 1442,

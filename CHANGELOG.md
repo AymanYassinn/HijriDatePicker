@@ -1,3 +1,7 @@
+## 0.0.2
+* JHijriPicker Second Release
+* Adding `JDateTimePicker`
+* Fixing `example.dart`
 ## 0.0.1
 
 * JHijriPicker First Release

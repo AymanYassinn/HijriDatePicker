@@ -4,17 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:jhijri/jHijri.dart';
-
-enum WidgetType {
-  JDialog,
-  JContainer,
-}
-
-class JDateModel {
-  JHijri? jhijri;
-  DateTime? dateTime;
-  JDateModel({this.dateTime, this.jhijri});
-}
+import '../jhijri_picker.dart';
 
 typedef SelectableDayPredicate = bool Function(HijriDate day);
 Future<HijriDate?> showJHijriPicker({
@@ -169,7 +159,7 @@ class _JHijriPickerState extends State<JHijriPicker> {
   Widget build(BuildContext context) {
     final theme = widget.themeD ?? Theme.of(context);
     final media = MediaQuery.of(context);
-    return _JHijriPicker(
+    return _JLocalDirection(
         locale: widget.locale,
         textDirection: widget.textDirection,
         child: _WidgetType(
@@ -285,11 +275,11 @@ class _JHijriPickerState extends State<JHijriPicker> {
   }
 }
 
-class _JHijriPicker extends StatelessWidget {
+class _JLocalDirection extends StatelessWidget {
   final TextDirection? textDirection;
   final Locale? locale;
   final Widget child;
-  const _JHijriPicker(
+  const _JLocalDirection(
       {Key? key, this.textDirection, this.locale, required this.child})
       : super(key: key);
 

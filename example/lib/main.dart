@@ -64,32 +64,58 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            JHijriPicker(
-              widgetType: WidgetType.JContainer,
-              buttons: const SizedBox(),
-              primaryColor: Colors.blue,
-              calendarTextColor: Colors.white,
-              backgroundColor: Colors.black,
-              borderRadius: const Radius.circular(10),
-              headerTitle: const Center(
-                child: Text("التقويم الهجري"),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+              child: ListView(
+            children: [
+              JHijriPicker(
+                widgetType: WidgetType.JContainer,
+                buttons: const SizedBox(),
+                primaryColor: Colors.blue,
+                calendarTextColor: Colors.white,
+                backgroundColor: Colors.black,
+                borderRadius: const Radius.circular(10),
+                headerTitle: const Center(
+                  child: Text("التقويم الهجري"),
+                ),
+                startDate: JDateModel(dateTime: DateTime.parse("1984-12-24")),
+                selectedDate: JDateModel(dateTime: DateTime.now()),
+                endDate: JDateModel(dateTime: DateTime.parse("2030-09-20")),
+                pickerMode: DatePickerMode.day,
+                themeD: Theme.of(context),
+                textDirection: TextDirection.rtl,
+                onChange: (val) {
+                  debugPrint(val.toString());
+                },
               ),
-              startDate: JDateModel(dateTime: DateTime.parse("1984-12-24")),
-              selectedDate: JDateModel(dateTime: DateTime.now()),
-              endDate: JDateModel(dateTime: DateTime.parse("2030-09-20")),
-              pickerMode: DatePickerMode.day,
-              themeD: Theme.of(context),
-              textDirection: TextDirection.rtl,
-              onChange: (val) {
-                debugPrint(val.toString());
-              },
-            ),
-          ],
-        ),
+              const Divider(
+                color: Colors.blue,
+              ),
+              JDateTimePicker(
+                widgetType: WidgetType.JContainer,
+                buttons: const SizedBox(),
+                primaryColor: Colors.blue,
+                calendarTextColor: Colors.white,
+                backgroundColor: Colors.black,
+                borderRadius: const Radius.circular(10),
+                headerTitle: const Center(
+                  child: Text("التقويم الميلادي"),
+                ),
+                startDate: JDateModel(dateTime: DateTime.parse("1984-12-24")),
+                selectedDate: JDateModel(dateTime: DateTime.now()),
+                endDate: JDateModel(dateTime: DateTime.parse("2030-09-20")),
+                pickerMode: DatePickerMode.day,
+                themeD: Theme.of(context),
+                textDirection: TextDirection.rtl,
+                onChange: (val) {
+                  debugPrint(val.toString());
+                },
+              ),
+            ],
+          ))
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -118,9 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 //locale: const Locale("ar", "SA"),
                 okButton: "حفظ",
                 cancelButton: "عودة",
-                onChange: (val) {
+                /*onChange: (val) {
                   debugPrint(val.toString());
-                },
+                },*/
                 onOk: (value) {
                   debugPrint(value.toMap().toString());
                   Navigator.pop(context);
@@ -143,6 +169,56 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             tooltip: 'CC',
             child: const Icon(Icons.cabin),
+          ),
+          FloatingActionButton(
+            heroTag: "2",
+            onPressed: () async {
+              final dateTime = await showJDateTimePicker(
+                context: context,
+                startDate: JDateModel(
+                    jhijri: JHijri(
+                  fYear: 1442,
+                  fMonth: 12,
+                  fDay: 10,
+                )),
+                selectedDate: JDateModel(jhijri: JHijri.now()),
+                endDate: JDateModel(
+                    jhijri: JHijri(
+                  fDay: 25,
+                  fMonth: 1,
+                  fYear: 1460,
+                )),
+                pickerMode: DatePickerMode.day,
+                theme: Theme.of(context),
+                textDirection: TextDirection.rtl,
+                //locale: const Locale("ar", "SA"),
+                okButton: "حفظ",
+                cancelButton: "عودة",
+                /* onChange: (val) {
+                  debugPrint(val.toString());
+                },*/
+                onOk: (value) {
+                  debugPrint(value.toString());
+                  Navigator.pop(context);
+                },
+                onCancel: () {
+                  Navigator.pop(context);
+                },
+                primaryColor: Colors.blue,
+                calendarTextColor: Colors.white,
+                backgroundColor: Colors.black,
+                borderRadius: const Radius.circular(10),
+                buttonTextColor: Colors.white,
+                headerTitle: const Center(
+                  child: Text("التقويم الميلادي"),
+                ),
+              );
+              if (dateTime != null) {
+                debugPrint(dateTime.toString());
+              }
+            },
+            tooltip: 'CC',
+            child: const Icon(Icons.cabin_outlined),
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.

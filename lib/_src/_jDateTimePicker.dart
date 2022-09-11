@@ -92,7 +92,7 @@ class JDateTimePicker extends StatefulWidget {
       this.buttonTextColor,
       this.borderRadius,
       this.buttons,
-      required this.widgetType,
+      this.widgetType = WidgetType.JDialog,
       this.textDirection,
       this.locale})
       : super(key: key);

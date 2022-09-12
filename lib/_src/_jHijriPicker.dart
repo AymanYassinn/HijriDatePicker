@@ -600,16 +600,14 @@ const double _monthNavButtonsWidth = 108.0;
 /// showing.
 ///
 /// The calendar picker widget is rarely used directly. Instead, consider using
-/// [showDatePicker], which will create a dialog that uses this as well as
+/// [showJHijriPicker], which will create a dialog that uses this as well as
 /// provides a text entry option.
 ///
 /// See also:
 ///
-///  * [showDatePicker], which creates a Dialog that contains a
+///  * [showJHijriPicker], which creates a Dialog that contains a
 ///    [JCalendarDatePicker] and provides an optional compact view where the
 ///    user can enter a date as a line of text.
-///  * [showTimePicker], which shows a dialog that contains a Material Design
-///    time picker.
 
 class JCalendarDatePicker extends StatefulWidget {
   /// Creates a calendar date picker.

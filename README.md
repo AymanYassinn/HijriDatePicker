@@ -103,7 +103,7 @@ As Widget:
 }
 ```
 
-To Use `JDateTimePicker`
+To Use `JWesternDatePicker`
 
 As Dialog:
 -

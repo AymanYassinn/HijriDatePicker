@@ -1,3 +1,10 @@
+## 1.0.0
+* Merge `JHijriPicker` and `JWesternPicker` on `JGlobalPicker` 
+* Change `showJHijriPicker`  to `showGlobalDatePicker` 
+* Fixing analyse Issue
+* Adding `JPickerValue` class as return type for `showGlobalDatePicker`
+* Adding `JPickerValue` class as return type for `onOk`
+* Adding `JPickerValue` class as return type for `onChange`
 ## 0.0.4
 * JHijriPicker Fourth Release
 * Merge `showJDateTimePicker` with `showJHijriPicker`

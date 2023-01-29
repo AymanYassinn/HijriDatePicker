@@ -10,13 +10,13 @@ Just An Amazing Hijri Date Picker Widget With Many Customizable Options, Easy To
 
 
 ## Usage
-To Use `JHijriPicker`
+To Use `JGlobalDatePicker`
 
 * JDateModel
 
 This Model Could Be JHijri Or DateTime, One Value Not Both.
 ```dart
-DateModel dM = JDateModel(dateTime: DateTime.now());
+JDateModel dM = JDateModel(dateTime: DateTime.now());
 Or
 dM = JDateModel(jhijri: JHijri.now());
 ```
@@ -26,27 +26,42 @@ Note:
 -
 If You Use `onChange` Method You Can't Use `onOk`
 
-As Dialog:
+As Simple Dialog:
 -
 ```dart
 final val = openDialog(context);
 Future<HijriDate?> openDialog(BuildContext context)async{
- return await showJHijriPicker(
+ return await showGlobalDatePicker(context: context, pickerType:PickerType.JNormal);
+}
+```
+As Full Dialog:
+-
+```dart
+final dialog = openDialog(context);
+Future<HijriDate?> openDialog(BuildContext context)async{
+  return await showGlobalDatePicker(
     context: context,
-    startDate: JDateModel(dateTime: DateTime.parse("2005-12-24")) ,
-    selectedDate: JDateModel(dateTime: DateTime.now()),
-    endDate: JDateModel(dateTime: DateTime.parse("2030-09-20")),
+    startDate: JDateModel(
+        jhijri: JHijri(
+          fYear: 1442,
+          fMonth: 12,
+          fDay: 10,
+        )),
+    selectedDate: JDateModel(jhijri: JHijri.now()),
+    endDate: JDateModel(
+        jhijri: JHijri(
+          fDay: 25,
+          fMonth: 1,
+          fYear: 1460,
+        )),
     pickerMode: DatePickerMode.day,
-    theme: Theme.of(context),
+    pickerTheme: Theme.of(context),
     textDirection: TextDirection.rtl,
     //locale: const Locale("ar", "SA"),
-    okButton: "حفظ",
-    cancelButton: "عودة",
-    onChange: (val) {
-      debugPrint(val.toString());
-    },
+    okButtonText: "حفظ",
+    cancelButtonText: "عودة",
     onOk: (value) {
-      debugPrint(value.toMap().toString());
+      debugPrint(value.toString());
       Navigator.pop(context);
     },
     onCancel: () {
@@ -58,130 +73,37 @@ Future<HijriDate?> openDialog(BuildContext context)async{
     borderRadius: const Radius.circular(10),
     buttonTextColor: Colors.white,
     headerTitle: const Center(
-      child: Text("التقويم الهجري"),
+      child: Text("التقويم الهجري", style: TextStyle(color: Colors.white),),
     ),
   );
 }
 ```
+
 As Widget:
 -
 ```dart
-  class Ex extends StatelessWidget {
-  const Ex({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return JHijriPicker(
-      widgetType: WidgetType.JContainer,
-      buttons: const SizedBox(),
-      primaryColor: Colors.blue,
-      calendarTextColor: Colors.white,
-      backgroundColor: Colors.black,
-      borderRadius: const Radius.circular(10),
-      headerTitle: const Center(
-        child: Text("التقويم الهجري"),
-      ),
-      startDate: JDateModel(jhijri:JHijri(
-        fYear: 1442,
-        fMonth: 12,
-        fDay: 10,
-      )),
-      selectedDate: JDateModel(jhijri:JHijri.now()),
-      endDate: JDateModel(jhijri:JHijri(
-        fDay: 25,
-        fMonth: 1,
-        fYear: 1460,
-      )),
-      pickerMode: DatePickerMode.day,
-      themeD: Theme.of(context),
-      textDirection: TextDirection.rtl,
-      onChange: (val) {
-        debugPrint(val.toString());
-      },
-    );
-  }
-}
-```
-
-To Use `JWesternDatePicker`
-
-As Dialog:
--
-```dart
-final val = openDialog(context);
-Future<HijriDate?> openDialog(BuildContext context)async{
- return await showJHijriPicker(
-   context: context,
-   pickerType: PickerType.JWestern,
-   startDate: JDateModel(
-       jhijri: JHijri(
-         fYear: 1442,
-         fMonth: 12,
-         fDay: 10,
-       )),
-   selectedDate: JDateModel(jhijri: JHijri.now()),
-   endDate: JDateModel(
-       jhijri: JHijri(
-         fDay: 25,
-         fMonth: 1,
-         fYear: 1460,
-       )),
-   pickerMode: DatePickerMode.day,
-   theme: Theme.of(context),
-   textDirection: TextDirection.rtl,
-   //locale: const Locale("ar", "SA"),
-   okButton: "حفظ",
-   cancelButton: "عودة",
-   /* onChange: (val) {
-                  debugPrint(val.toString());
-                },*/
-   onOk: (value) {
-     debugPrint(value.toString());
-     Navigator.pop(context);
-   },
-   onCancel: () {
-     Navigator.pop(context);
-   },
-   primaryColor: Colors.blue,
-   calendarTextColor: Colors.white,
-   backgroundColor: Colors.black,
-   borderRadius: const Radius.circular(10),
-   buttonTextColor: Colors.white,
-   headerTitle: const Center(
-     child: Text("التقويم الميلادي"),
-   ),
- );
-}
-```
-As Widget:
--
-```dart
-  class Ex extends StatelessWidget {
-  const Ex({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return JWesternDatePicker(
-      widgetType: WidgetType.JContainer,
-      buttons: const SizedBox(),
-      primaryColor: Colors.blue,
-      calendarTextColor: Colors.white,
-      backgroundColor: Colors.black,
-      borderRadius: const Radius.circular(10),
-      headerTitle: const Center(
-        child: Text("التقويم الميلادي"),
-      ),
-      startDate: JDateModel(dateTime: DateTime.parse("1984-12-24")),
-      selectedDate: JDateModel(dateTime: DateTime.now()),
-      endDate: JDateModel(dateTime: DateTime.parse("2030-09-20")),
-      pickerMode: DatePickerMode.day,
-      themeD: Theme.of(context),
-      textDirection: TextDirection.rtl,
-      onChange: (val) {
-        debugPrint(val.toString());
-      },
-    );
-  }
+Widget _JHijriAsWidget(){
+  return JGlobalDatePicker(
+    widgetType: WidgetType.JContainer,
+    pickerType: PickerType.JHijri,
+    buttons: const SizedBox(),
+    primaryColor: Colors.blue,
+    calendarTextColor: Colors.white,
+    backgroundColor: Colors.black,
+    borderRadius: const Radius.circular(10),
+    headerTitle: const Center(
+      child: Text("التقويم الهجري"),
+    ),
+    startDate: JDateModel(dateTime: DateTime.parse("1984-12-24")),
+    selectedDate: JDateModel(dateTime: DateTime.now()),
+    endDate: JDateModel(dateTime: DateTime.parse("2030-09-20")),
+    pickerMode: DatePickerMode.day,
+    pickerTheme: Theme.of(context),
+    textDirection: TextDirection.rtl,
+    onChange: (val) {
+      debugPrint(val.toString());
+    },
+  );
 }
 ```
 

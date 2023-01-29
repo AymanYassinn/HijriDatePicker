@@ -1,6 +1,6 @@
-# example
+# jhijri_picker_example
 
-A new Flutter project.
+Demonstrates how to use the jhijri_picker plugin.
 
 ## Getting Started
 

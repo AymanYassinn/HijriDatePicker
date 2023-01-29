@@ -5,577 +5,7 @@ import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:jhijri/jHijri.dart';
 
-enum WidgetType {
-  JDialog,
-  JContainer,
-}
-
-enum PickerType {
-  JHijri,
-  JWestern,
-}
-
-class JDateModel {
-  JHijri? jhijri;
-  DateTime? dateTime;
-  JDateModel({this.dateTime, this.jhijri});
-}
-
-typedef SelectableDayPredicate = bool Function(HijriDate day);
-Future<HijriDate?> showJHijriPicker({
-  required BuildContext context,
-  JDateModel? selectedDate,
-  JDateModel? startDate,
-  JDateModel? endDate,
-  DatePickerMode pickerMode = DatePickerMode.day,
-  String? okButton,
-  PickerType pickerType = PickerType.JHijri,
-  String? cancelButton,
-  Widget? headerTitle,
-  Widget? buttons,
-  Function(HijriDate datetime)? onOk,
-  Function(HijriDate datetime)? onChange,
-  VoidCallback? onCancel,
-  ThemeData? theme,
-  Color? primaryColor,
-  Color? backgroundColor,
-  Color? calendarTextColor,
-  Color? buttonTextColor,
-  SelectableDayPredicate? selectableDayPredicate,
-  Radius? borderRadius,
-  TextDirection? textDirection,
-  Locale? locale,
-}) {
-  Widget dialog = JHijriPicker(
-    startDate: startDate,
-    selectedDate: selectedDate,
-    endDate: endDate,
-    pickerMode: pickerMode,
-    themeD: theme,
-    textDirection: textDirection,
-    locale: locale,
-    okButtonT: okButton,
-    cancelButtonT: cancelButton,
-    onOk: onOk,
-    onCancel: onCancel,
-    primaryColor: primaryColor,
-    calendarTextColor: calendarTextColor,
-    backgroundColor: backgroundColor,
-    borderRadius: borderRadius,
-    buttonTextColor: buttonTextColor,
-    headerTitle: headerTitle,
-    buttons: buttons,
-    widgetType: WidgetType.JDialog,
-    onChange: onChange,
-    selectableDayPredicate: selectableDayPredicate,
-  );
-  if (pickerType != PickerType.JHijri) {
-    dialog = JWesternDatePicker(
-      startDate: startDate,
-      selectedDate: selectedDate,
-      endDate: endDate,
-      pickerMode: pickerMode,
-      themeD: theme,
-      textDirection: textDirection,
-      locale: locale,
-      okButtonT: okButton,
-      cancelButtonT: cancelButton,
-      onOk: onOk,
-      onCancel: onCancel,
-      primaryColor: primaryColor,
-      calendarTextColor: calendarTextColor,
-      backgroundColor: backgroundColor,
-      borderRadius: borderRadius,
-      buttonTextColor: buttonTextColor,
-      headerTitle: headerTitle,
-      buttons: buttons,
-      widgetType: WidgetType.JDialog,
-      onChange: onChange,
-    );
-  }
-  return showDialog<HijriDate?>(
-    context: context,
-    builder: (BuildContext context) {
-      return dialog;
-    },
-  );
-}
-
-class JHijriPicker extends StatefulWidget {
-  final JDateModel? selectedDate;
-  final JDateModel? startDate;
-  final JDateModel? endDate;
-  final DatePickerMode? pickerMode;
-  final String? okButtonT;
-  final String? cancelButtonT;
-  final Widget? headerTitle;
-  final Function(HijriDate datetime)? onOk;
-  final Function(HijriDate datetime)? onChange;
-  final VoidCallback? onCancel;
-  final ThemeData? themeD;
-  final Color? primaryColor;
-  final Color? backgroundColor;
-  final Color? calendarTextColor;
-  final Color? buttonTextColor;
-  final Radius? borderRadius;
-  final Widget? buttons;
-  final WidgetType widgetType;
-  final TextDirection? textDirection;
-  final SelectableDayPredicate? selectableDayPredicate;
-  final Locale? locale;
-  const JHijriPicker(
-      {Key? key,
-      this.selectedDate,
-      this.startDate,
-      this.endDate,
-      this.pickerMode,
-      this.okButtonT,
-      this.cancelButtonT,
-      this.headerTitle,
-      this.onOk,
-      this.onChange,
-      this.onCancel,
-      this.themeD,
-      this.primaryColor,
-      this.backgroundColor,
-      this.calendarTextColor,
-      this.buttonTextColor,
-      this.borderRadius,
-      this.buttons,
-      this.widgetType = WidgetType.JDialog,
-      this.textDirection,
-      this.locale,
-      this.selectableDayPredicate})
-      : super(key: key);
-
-  @override
-  State<JHijriPicker> createState() => _JHijriPickerState();
-}
-
-class _JHijriPickerState extends State<JHijriPicker> {
-  HijriDate sel = JHijri.now().hijri;
-  JHijri sel1 = JHijri();
-  JHijri sta = JHijri(fYear: 2000);
-  JHijri end = JHijri(fYear: 2060);
-  @override
-  void initState() {
-    _jDa();
-    super.initState();
-  }
-
-  _jDa() {
-    if (widget.startDate != null) {
-      if (widget.startDate!.jhijri != null) {
-        sta = widget.startDate!.jhijri!;
-      } else if (widget.startDate!.dateTime != null) {
-        sta = JHijri(fDate: widget.startDate!.dateTime);
-      } else {
-        sta = JHijri(fYear: 2000);
-      }
-    }
-    if (widget.endDate != null) {
-      if (widget.endDate!.jhijri != null) {
-        end = widget.endDate!.jhijri!;
-      } else if (widget.endDate!.dateTime != null) {
-        end = JHijri(fDate: widget.endDate!.dateTime);
-      } else {
-        end = JHijri(fYear: 2060);
-      }
-    }
-    if (widget.selectedDate != null) {
-      if (widget.selectedDate!.jhijri != null) {
-        sel1 = widget.selectedDate!.jhijri!;
-        sel = widget.selectedDate!.jhijri!.hijri;
-      } else if (widget.selectedDate!.dateTime != null) {
-        sel1 = JHijri(fDate: widget.selectedDate!.dateTime);
-        sel = JHijri(fDate: widget.selectedDate!.dateTime).hijri;
-      } else {
-        sel1 = JHijri();
-        sel = JHijri.now().hijri;
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = widget.themeD ?? Theme.of(context);
-    final media = MediaQuery.of(context);
-    return _JLocalDirection(
-        locale: widget.locale,
-        textDirection: widget.textDirection,
-        child: _WidgetType(
-            widgetType: widget.widgetType,
-            child: Theme(
-              data: ThemeData(
-                colorScheme: theme.colorScheme.copyWith(
-                  primary: widget.primaryColor ?? Colors.blue,
-                  surface: widget.backgroundColor ?? Colors.white,
-                  onSurface: widget.calendarTextColor ?? Colors.black,
-                ),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.headerTitle != null) widget.headerTitle!,
-                    Container(
-                      constraints:
-                          BoxConstraints(maxHeight: media.size.height - 120),
-                      decoration: BoxDecoration(
-                        color: widget.backgroundColor ?? Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: widget.borderRadius ??
-                                const Radius.circular(16),
-                            topRight: widget.borderRadius ??
-                                const Radius.circular(16)),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          JCalendarDatePicker(
-                            initialDate: sel1,
-                            firstDate: sta,
-                            lastDate: end,
-                            selectableDayPredicate:
-                                widget.selectableDayPredicate,
-                            onDateChanged: widget.onChange != null
-                                ? (dateTime) => widget.onChange!(dateTime)
-                                : (dateTime) {
-                                    sel = dateTime;
-                                  },
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (widget.buttons != null) widget.buttons!,
-                    if (widget.buttons == null)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: widget.backgroundColor ?? Colors.white,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: widget.borderRadius ??
-                                const Radius.circular(16),
-                            bottomRight: widget.borderRadius ??
-                                const Radius.circular(16),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              child: TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      widget.backgroundColor),
-                                ),
-                                onPressed: widget.onCancel ??
-                                    () {
-                                      Navigator.pop(context);
-                                    },
-                                child: Text(
-                                  widget.cancelButtonT ?? "Cancel",
-                                  style: TextStyle(
-                                      color: widget.buttonTextColor ??
-                                          Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                              child: VerticalDivider(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Expanded(
-                              child: TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      widget.backgroundColor),
-                                ),
-                                onPressed: widget.onOk != null
-                                    ? () => widget.onOk!(sel)
-                                    : () {
-                                        Navigator.pop(context, sel);
-                                      },
-                                child: Text(
-                                  widget.okButtonT ?? "Ok",
-                                  style: TextStyle(
-                                      color: widget.buttonTextColor ??
-                                          Colors.black),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            )));
-  }
-}
-
-class JWesternDatePicker extends StatefulWidget {
-  final JDateModel? selectedDate;
-  final JDateModel? startDate;
-  final JDateModel? endDate;
-  final DatePickerMode? pickerMode;
-  final String? okButtonT;
-  final String? cancelButtonT;
-  final Widget? headerTitle;
-  final Function(HijriDate datetime)? onOk;
-  final Function(HijriDate datetime)? onChange;
-  final VoidCallback? onCancel;
-  final ThemeData? themeD;
-  final Color? primaryColor;
-  final Color? backgroundColor;
-  final Color? calendarTextColor;
-  final Color? buttonTextColor;
-  final Radius? borderRadius;
-  final Widget? buttons;
-  final WidgetType widgetType;
-  final TextDirection? textDirection;
-  final Locale? locale;
-  const JWesternDatePicker(
-      {Key? key,
-      this.selectedDate,
-      this.startDate,
-      this.endDate,
-      this.pickerMode,
-      this.okButtonT,
-      this.cancelButtonT,
-      this.headerTitle,
-      this.onOk,
-      this.onChange,
-      this.onCancel,
-      this.themeD,
-      this.primaryColor,
-      this.backgroundColor,
-      this.calendarTextColor,
-      this.buttonTextColor,
-      this.borderRadius,
-      this.buttons,
-      this.widgetType = WidgetType.JDialog,
-      this.textDirection,
-      this.locale})
-      : super(key: key);
-
-  @override
-  State<JWesternDatePicker> createState() => _JWesternDatePickerState();
-}
-
-class _JWesternDatePickerState extends State<JWesternDatePicker> {
-  HijriDate sel = JHijri.now().hijri;
-  DateTime sel1 = DateTime.now();
-  DateTime sta = DateTime(2000);
-  DateTime end = DateTime(2060);
-  @override
-  void initState() {
-    _jDa();
-    super.initState();
-  }
-
-  _jDa() {
-    if (widget.startDate != null) {
-      if (widget.startDate!.jhijri != null) {
-        sta = widget.startDate!.jhijri!.dateTime;
-      } else if (widget.startDate!.dateTime != null) {
-        sta = widget.startDate!.dateTime!;
-      } else {
-        sta = DateTime(2000);
-      }
-    }
-    if (widget.endDate != null) {
-      if (widget.endDate!.jhijri != null) {
-        end = widget.endDate!.jhijri!.dateTime;
-      } else if (widget.endDate!.dateTime != null) {
-        end = widget.endDate!.dateTime!;
-      } else {
-        end = DateTime(2060);
-      }
-    }
-    if (widget.selectedDate != null) {
-      if (widget.selectedDate!.jhijri != null) {
-        sel1 = widget.selectedDate!.jhijri!.dateTime;
-        sel = widget.selectedDate!.jhijri!.hijri;
-      } else if (widget.selectedDate!.dateTime != null) {
-        sel1 = widget.selectedDate!.dateTime!;
-        sel = JHijri(fDate: widget.selectedDate!.dateTime).hijri;
-      } else {
-        sel1 = DateTime.now();
-        sel = JHijri.now().hijri;
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = widget.themeD ?? Theme.of(context);
-    final media = MediaQuery.of(context);
-    return _JLocalDirection(
-        locale: widget.locale,
-        textDirection: widget.textDirection,
-        child: _WidgetType(
-            widgetType: widget.widgetType,
-            child: Theme(
-              data: ThemeData(
-                colorScheme: theme.colorScheme.copyWith(
-                  primary: widget.primaryColor ?? Colors.blue,
-                  surface: widget.backgroundColor ?? Colors.white,
-                  onSurface: widget.calendarTextColor ?? Colors.black,
-                ),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.headerTitle != null) widget.headerTitle!,
-                    Container(
-                      constraints:
-                          BoxConstraints(maxHeight: media.size.height - 120),
-                      decoration: BoxDecoration(
-                        color: widget.backgroundColor ?? Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: widget.borderRadius ??
-                                const Radius.circular(16),
-                            topRight: widget.borderRadius ??
-                                const Radius.circular(16)),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CalendarDatePicker(
-                            initialDate: sel1,
-                            firstDate: sta,
-                            lastDate: end,
-                            onDateChanged: widget.onChange != null
-                                ? (dateTime) => widget
-                                    .onChange!(JHijri(fDate: dateTime).hijri)
-                                : (dateTime) {
-                                    sel = JHijri(fDate: dateTime).hijri;
-                                  },
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (widget.buttons != null) widget.buttons!,
-                    if (widget.buttons == null)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: widget.backgroundColor ?? Colors.white,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: widget.borderRadius ??
-                                const Radius.circular(16),
-                            bottomRight: widget.borderRadius ??
-                                const Radius.circular(16),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              child: TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      widget.backgroundColor),
-                                ),
-                                onPressed: widget.onCancel ??
-                                    () {
-                                      Navigator.pop(context);
-                                    },
-                                child: Text(
-                                  widget.cancelButtonT ?? "Cancel",
-                                  style: TextStyle(
-                                      color: widget.buttonTextColor ??
-                                          Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                              child: VerticalDivider(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Expanded(
-                              child: TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      widget.backgroundColor),
-                                ),
-                                onPressed: widget.onOk != null
-                                    ? () => widget.onOk!(sel)
-                                    : () {
-                                        Navigator.pop(context, sel);
-                                      },
-                                child: Text(
-                                  widget.okButtonT ?? "Ok",
-                                  style: TextStyle(
-                                      color: widget.buttonTextColor ??
-                                          Colors.black),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            )));
-  }
-}
-
-class _JLocalDirection extends StatelessWidget {
-  final TextDirection? textDirection;
-  final Locale? locale;
-  final Widget child;
-  const _JLocalDirection(
-      {Key? key, this.textDirection, this.locale, required this.child})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Localizations.override(
-      context: context,
-      locale: locale,
-      child: textDirection != null
-          ? Directionality(
-              textDirection: textDirection!,
-              child: child,
-            )
-          : child,
-    );
-  }
-}
-
-class _WidgetType extends StatelessWidget {
-  final Widget child;
-  final WidgetType widgetType;
-  const _WidgetType({Key? key, required this.widgetType, required this.child})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    switch (widgetType) {
-      case WidgetType.JDialog:
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          alignment: Alignment.center,
-          child: child,
-        );
-      case WidgetType.JContainer:
-        return Container(
-          color: Colors.transparent,
-          alignment: Alignment.center,
-          child: child,
-        );
-    }
-  }
-}
-
+typedef JSelectableDayPredicate = bool Function(HijriDate day);
 const Duration _monthScrollDuration = Duration(milliseconds: 200);
 
 const double _dayPickerRowHeight = 42.0;
@@ -647,6 +77,7 @@ class JCalendarDatePicker extends StatefulWidget {
     this.onDisplayedMonthChanged,
     this.initialCalendarMode = DatePickerMode.day,
     this.selectableDayPredicate,
+    this.localeCode = 'en',
   })  : initialDate = initialDate.hijri,
         firstDate = firstDate.hijri,
         lastDate = lastDate.hijri,
@@ -679,6 +110,9 @@ class JCalendarDatePicker extends StatefulWidget {
   /// The latest allowable [HijriDate] that the user can select.
   final HijriDate lastDate;
 
+  /// The latest allowable [HijriDate] that the user can select.
+  final String localeCode;
+
   /// The [DateTime] representing today. It will be highlighted in the day grid.
   final HijriDate currentDate;
 
@@ -692,7 +126,7 @@ class JCalendarDatePicker extends StatefulWidget {
   final DatePickerMode initialCalendarMode;
 
   /// Function to provide full control over which dates in the calendar can be selected.
-  final SelectableDayPredicate? selectableDayPredicate;
+  final JSelectableDayPredicate? selectableDayPredicate;
 
   @override
   State<JCalendarDatePicker> createState() => _JCalendarDatePickerState();
@@ -705,7 +139,6 @@ class _JCalendarDatePickerState extends State<JCalendarDatePicker> {
   late HijriDate _selectedDate;
   final GlobalKey _monthPickerKey = GlobalKey();
   final GlobalKey _yearPickerKey = GlobalKey();
-  //late MaterialLocalizations _localizations;
   late TextDirection _textDirection;
 
   @override
@@ -866,7 +299,8 @@ class _JCalendarDatePickerState extends State<JCalendarDatePicker> {
         // Put the mode toggle button on top so that it won't be covered up by the _MonthPicker
         _JDatePickerModeToggleButton(
           mode: _mode,
-          year: _currentDisplayedMonthDate.year.toString(),
+          year: _yearC,
+          // year: _currentDisplayedMonthDate.year.toString(),
           onTitlePressed: () {
             // Toggle the day/year mode.
             _handleModeChanged(_mode == DatePickerMode.day
@@ -876,6 +310,100 @@ class _JCalendarDatePickerState extends State<JCalendarDatePicker> {
         ),
       ],
     );
+  }
+
+  String get _yearC {
+    final String fl = widget.localeCode.toLowerCase();
+    switch (fl) {
+      case "ar":
+      case "arc":
+      case "ha":
+      case "dv":
+      case "he":
+      case "fa":
+      case "ur":
+      case "khw":
+      case "ks":
+      case "ps":
+      case "yi":
+        return "${_arabicMonth(_currentDisplayedMonthDate.month)} ${_currentDisplayedMonthDate.year}";
+      default:
+        return "${_arabicMonth2(_currentDisplayedMonthDate.month)} ${_currentDisplayedMonthDate.year}";
+    }
+  }
+}
+
+String _arabicMonth(var month) {
+  switch (month) {
+    case 1:
+    case "Muharram":
+      return "محرم";
+    case 2:
+    case "Safar":
+      return "صفر";
+    case 3:
+    case "Rabi' Al-Awwal":
+      return "ربيع الاول";
+    case 4:
+    case "Rabi' Al-Thani":
+      return "ربيع الثاني";
+    case 5:
+    case "Jumada Al-Awwal":
+      return "جمادى الأول";
+    case 6:
+    case "Jumada Al-Thani":
+      return "جمادى الثاني";
+    case 7:
+    case "Rajab":
+      return "رجب";
+    case 8:
+    case "Sha'aban":
+      return "شعبان";
+    case 9:
+    case "Ramadan":
+      return "رمضان";
+    case 10:
+    case "Shawwal":
+      return "شوال";
+    case 11:
+    case "Dhu Al-Qi'dah":
+      return "ذو القعدة";
+    case 12:
+    case "Dhu Al-Hijjah":
+      return "ذو الحجة";
+    default:
+      return "";
+  }
+}
+
+String _arabicMonth2(var month) {
+  switch (month) {
+    case 1:
+      return "Muharram";
+    case 2:
+      return "Safar";
+    case 3:
+      return "Rabi' Al-Awwal";
+    case 4:
+      return "Rabi' Al-Thani";
+    case 5:
+      return "Jumada Al-Awwal";
+    case 6:
+      return "Jumada Al-Thani";
+    case 7:
+      return "Rajab";
+    case 8:
+      return "Sha'aban";
+    case 9:
+      return "Ramadan";
+    case 10:
+      return "Shawwal";
+    case 11:
+      return "Dhu Al-Qi'dah";
+    case 12:
+      return "Dhu Al-Hijjah";
+    default:
+      return "";
   }
 }
 
@@ -963,7 +491,7 @@ class _JDatePickerModeToggleButtonState
                           child: Text(
                             widget.year,
                             overflow: TextOverflow.ellipsis,
-                            style: textTheme.subtitle2?.copyWith(
+                            style: textTheme.titleSmall?.copyWith(
                               color: controlColor,
                             ),
                           ),
@@ -1043,7 +571,7 @@ class _JMonthPicker extends StatefulWidget {
   final ValueChanged<HijriDate> onDisplayedMonthChanged;
 
   /// Optional user supplied predicate function to customize selectable days.
-  final SelectableDayPredicate? selectableDayPredicate;
+  final JSelectableDayPredicate? selectableDayPredicate;
 
   @override
   _JMonthPickerState createState() => _JMonthPickerState();
@@ -1132,9 +660,6 @@ class _JMonthPickerState extends State<_JMonthPicker> {
     int fY = xz % 12 == 0 ? xx - 1 : xx;
     int fM = xz % 12 == 0 ? 12 : xz % 12;
     var x = JHijri(fMonth: fM, fDay: 1, fYear: fY).hijri;
-    /* var x = HijriCalendar.addMonth(
-        monthDate.hYear + (monthDate.hMonth + monthsToAdd) ~/ 12,
-        monthDate.hMonth + monthsToAdd % 12);*/
     return x;
   }
 
@@ -1363,7 +888,6 @@ class _JMonthPickerState extends State<_JMonthPicker> {
   Widget build(BuildContext context) {
     final Color controlColor =
         Theme.of(context).colorScheme.onSurface.withOpacity(0.60);
-    final TextTheme textTheme = Theme.of(context).textTheme;
     return Semantics(
       child: Column(
         children: <Widget>[
@@ -1393,13 +917,13 @@ class _JMonthPickerState extends State<_JMonthPicker> {
               ],
             ),
           ),
-          Text(
+          /*Text(
             "${widget.selectedDate.dayName.toString()} / ${widget.selectedDate.day} / ${widget.selectedDate.monthName}",
             overflow: TextOverflow.ellipsis,
-            style: textTheme.subtitle2?.copyWith(
+            style: textTheme.titleSmall?.copyWith(
               color: controlColor,
             ),
-          ),
+          ),*/
           Expanded(
             child: FocusableActionDetector(
               shortcuts: _shortcutMap,
@@ -1498,7 +1022,7 @@ class _JDayPicker extends StatefulWidget {
   final HijriDate displayedMonth;
 
   /// Optional user supplied predicate function to customize selectable days.
-  final SelectableDayPredicate? selectableDayPredicate;
+  final JSelectableDayPredicate? selectableDayPredicate;
 
   @override
   _JDayPickerState createState() => _JDayPickerState();
@@ -1578,20 +1102,6 @@ class _JDayPickerState extends State<_JDayPicker> {
     }
     return result;
   }
-  /*List<Widget> _dayHeaders(
-      TextStyle? headerStyle, MaterialLocalizations localizations) {
-    final List<Widget> result = <Widget>[];
-    for (int i = localizations.firstDayOfWeekIndex; true; i = (i + 1) % 7) {
-      final String weekday = localizations.narrowWeekdays[i];
-      result.add(ExcludeSemantics(
-        child: Center(child: Text(weekday, style: headerStyle)),
-      ));
-      if (i == (localizations.firstDayOfWeekIndex - 1) % 7) {
-        break;
-      }
-    }
-    return result;
-  }*/
 
   static bool _isSameDay(HijriDate? dateA, HijriDate? dateB) {
     return dateA?.year == dateB?.year &&
@@ -1619,10 +1129,10 @@ class _JDayPickerState extends State<_JDayPicker> {
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final TextStyle? headerStyle = textTheme.caption?.apply(
+    final TextStyle? headerStyle = textTheme.bodySmall?.apply(
       color: colorScheme.onSurface.withOpacity(0.60),
     );
-    final TextStyle dayStyle = textTheme.caption!;
+    final TextStyle dayStyle = textTheme.bodySmall!;
     final Color enabledDayColor = colorScheme.onSurface.withOpacity(0.87);
     final Color disabledDayColor = colorScheme.onSurface.withOpacity(0.38);
     final Color selectedDayColor = colorScheme.onPrimary;
@@ -1850,7 +1360,7 @@ class _JYearPickerState extends State<JYearPicker> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    // Backfill the _YearPicker with disabled years if necessary.
+    // Back fill the _YearPicker with disabled years if necessary.
     final int offset = _itemCount < minYears ? (minYears - _itemCount) ~/ 2 : 0;
     final int year = widget.firstDate.year + index - offset;
     final bool isSelected = year == widget.selectedDate.year;
@@ -1870,7 +1380,7 @@ class _JYearPickerState extends State<JYearPicker> {
     } else {
       textColor = colorScheme.onSurface.withOpacity(0.87);
     }
-    final TextStyle? itemStyle = textTheme.bodyText1?.apply(color: textColor);
+    final TextStyle? itemStyle = textTheme.bodyLarge?.apply(color: textColor);
 
     BoxDecoration? decoration;
     if (isSelected) {

@@ -1,6 +1,6 @@
 name: jhijri_picker
 description: Just An Amazing Hijri Date Picker Widget With Many Customizable Options, Easy To Use, Customise & Implement.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/AymanYassinn/
 repository: https://github.com/AymanYassinn/HijriDatePicker
 
@@ -17,13 +17,13 @@ screenshots:
     path: example/screenshots/5.jpg
 
 environment:
-  sdk: '>=2.19.0 <3.0.0'
+  sdk: '>=3.0.6 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  jhijri: 0.0.4
+  jhijri: 1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

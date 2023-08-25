@@ -1,3 +1,5 @@
+## 1.0.1
+* Update Dependencies
 ## 1.0.0
 * Merge `JHijriPicker` and `JWesternPicker` on `JGlobalPicker` 
 * Change `showJHijriPicker`  to `showGlobalDatePicker` 

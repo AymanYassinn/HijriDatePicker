@@ -23,7 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  jhijri: 1.0.0
+  jhijri: ">=0.0.4 <2.0.0"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
